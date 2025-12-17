@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1><i class="fas fa-chart-line"></i> Tableau de bord</h1>
+    </div>
+</div>
+
+<!-- Statistiques principales -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <i class="fas fa-users" style="font-size: 2rem; color: #4a90e2;"></i>
+        <div class="stat-number" id="total-users">{{ stats.total_users }}</div>
+        <div class="stat-label">Utilisateurs</div>
+    </div>
+    
+    <div class="stat-card">
+        <i class="fas fa-box" style="font-size: 2rem; color: #50c878;"></i>
+        <div class="stat-number" id="total-products">{{ stats.total_products }}</div>
+        <div class="stat-label">Produits</div>
+    </div>
+    
+    <div class="stat-card">
+        <i class="fas fa-file" style="font-size: 2rem; color: #f39c12;"></i>
+        <div class="stat-number" id="total-uploads">{{ stats.total_uploads }}</div>
+        <div class="stat-label">Fichiers uploadés</div>
+    </div>
+    
+    <div class="stat-card">
+        <i class="fas fa-history" style="font-size: 2rem; color: #e74c3c;"></i>
+        <div class="stat-number" id="total-activities">{{ stats.total_activities }}</div>
+        <div class="stat-label">Activités</div>
+    </div>
+</div>
+
+<!-- Graphiques et données -->
+<div class="row">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-chart-pie"></i> Produits par catégorie</h3>
+            </div>
+            
+            {% if stats.products_by_category %}
+                <canvas id="categoryChart" style="max-height: 300px;"></canvas>
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Catégorie</th>
+                            <th>Nombre</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category, count in stats.products_by_category.items() %}
+                        <tr>
+                            <td>{{ category or 'Sans catégorie' }}</td>
+                            <td>{{ count }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p style="text-align: center; padding: 2rem; color: #666;">
+                    Aucune donnée disponible
+                </p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-history"></i> Activités récentes</h3>
+            </div>
+            
+            {% if stats.recent_activities %}
+                <div style="max-height: 400px; overflow-y: auto;">
+                    {% for activity in stats.recent_activities %}
+                        <div style="border-bottom: 1px solid #eee; padding: 1rem;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <strong>
+                                    <i class="fas fa-{{ 'plus' if 'create' in activity.action else 'edit' if 'update' in activity.action else 'trash' if 'delete' in activity.action else 'info' }}"></i>
+                                    {{ activity.description }}
+                                </strong>
+                                <small style="color: #666;">{{ activity.created_at }}</small>
+                            </div>
+                            <small style="color: #999;">
+                                Par {{ activity.user }}
+                            </small>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p style="text-align: center; padding: 2rem; color: #666;">
+                    Aucune activité récente
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Actions rapides -->
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fas fa-bolt"></i> Actions rapides</h3>
+    </div>
+    
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="{{ url_for('main.create_product') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Nouveau produit
+        </a>
+        <a href="{{ url_for('main.upload_file') }}" class="btn btn-success">
+            <i class="fas fa-upload"></i> Upload fichier
+        </a>
+        <a href="{{ url_for('main.products') }}" class="btn btn-secondary">
+            <i class="fas fa-list"></i> Voir tous les produits
+        </a>
+        {% if current_user.has_role('admin') %}
+        <a href="{{ url_for('admin.index') }}" class="btn btn-danger">
+            <i class="fas fa-user-shield"></i> Administration
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js pour les graphiques -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+<script>
+    // Graphique des catégories
+    {% if stats.products_by_category %}
+    const ctx = document.getElementById('categoryChart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: {{ stats.products_by_category.keys() | list | tojson }},
+                datasets: [{
+                    data: {{ stats.products_by_category.values() | list | tojson }},
+                    backgroundColor: [
+                        '#4a90e2',
+                        '#50c878',
+                        '#f39c12',
+                        '#e74c3c',
+                        '#9b59b6',
+                        '#1abc9c'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+    {% endif %}
+</script>
+{% endblock %}

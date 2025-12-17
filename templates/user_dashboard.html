@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Mon Tableau de bord{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1><i class="fas fa-home"></i> Bienvenue, {{ current_user.username }}!</h1>
+    </div>
+</div>
+
+<!-- Statistiques personnelles -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <i class="fas fa-box" style="font-size: 2rem; color: #50c878;"></i>
+        <div class="stat-number">{{ stats.my_products }}</div>
+        <div class="stat-label">Mes produits</div>
+    </div>
+    
+    <div class="stat-card">
+        <i class="fas fa-file" style="font-size: 2rem; color: #f39c12;"></i>
+        <div class="stat-number">{{ stats.my_uploads }}</div>
+        <div class="stat-label">Mes fichiers</div>
+    </div>
+    
+    <div class="stat-card">
+        <i class="fas fa-history" style="font-size: 2rem; color: #e74c3c;"></i>
+        <div class="stat-number">{{ stats.my_activities }}</div>
+        <div class="stat-label">Mes activités</div>
+    </div>
+    
+    <div class="stat-card">
+        <i class="fas fa-calendar" style="font-size: 2rem; color: #4a90e2;"></i>
+        <div class="stat-number">{{ stats.member_since }}</div>
+        <div class="stat-label">Membre depuis</div>
+    </div>
+</div>
+
+<!-- Mes produits récents et mes activités -->
+<div class="row">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-box"></i> Mes produits récents</h3>
+            </div>
+            
+            {% if stats.recent_products %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Catégorie</th>
+                            <th>Prix</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in stats.recent_products %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('main.view_product', product_id=product.id) }}">
+                                    {{ product.name }}
+                                </a>
+                            </td>
+                            <td>{{ product.category or '-' }}</td>
+                            <td>{{ "%.2f"|format(product.price) }} €</td>
+                            <td>{{ product.stock }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div style="text-align: center; padding: 1rem;">
+                    <a href="{{ url_for('main.products') }}" class="btn btn-primary">
+                        <i class="fas fa-list"></i> Voir tous mes produits
+                    </a>
+                </div>
+            {% else %}
+                <p style="text-align: center; padding: 2rem; color: #666;">
+                    Vous n'avez pas encore de produits.
+                </p>
+                <div style="text-align: center; padding: 1rem;">
+                    <a href="{{ url_for('main.create_product') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Créer mon premier produit
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-history"></i> Mes activités récentes</h3>
+            </div>
+            
+            {% if stats.my_recent_activities %}
+                <div style="max-height: 400px; overflow-y: auto;">
+                    {% for activity in stats.my_recent_activities %}
+                        <div style="border-bottom: 1px solid #eee; padding: 1rem;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <strong>
+                                    <i class="fas fa-{{ 'plus' if 'create' in activity.action else 'edit' if 'update' in activity.action else 'trash' if 'delete' in activity.action else 'info' }}"></i>
+                                    {{ activity.description }}
+                                </strong>
+                                <small style="color: #666;">{{ activity.created_at }}</small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p style="text-align: center; padding: 2rem; color: #666;">
+                    Aucune activité récente
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Mes fichiers récents -->
+<div class="row" style="margin-top: 2rem;">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-file"></i> Mes fichiers récents</h3>
+            </div>
+            
+            {% if stats.recent_uploads %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Fichier</th>
+                            <th>Type</th>
+                            <th>Taille</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for upload in stats.recent_uploads %}
+                        <tr>
+                            <td>
+                                <i class="fas fa-{{ 'file-pdf' if 'pdf' in upload.mime_type else 'file-image' if 'image' in upload.mime_type else 'file-word' if 'word' in upload.mime_type else 'file' }}"></i>
+                                {{ upload.original_filename }}
+                            </td>
+                            <td>{{ upload.mime_type or '-' }}</td>
+                            <td>{{ (upload.file_size / 1024) | round(2) }} KB</td>
+                            <td>{{ upload.uploaded_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                            <td>
+                                <a href="{{ url_for('main.download_file', file_id=upload.id) }}" class="btn btn-sm" title="Télécharger">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div style="text-align: center; padding: 1rem;">
+                    <a href="{{ url_for('main.upload_file') }}" class="btn btn-primary">
+                        <i class="fas fa-list"></i> Voir tous mes fichiers
+                    </a>
+                </div>
+            {% else %}
+                <p style="text-align: center; padding: 2rem; color: #666;">
+                    Vous n'avez pas encore téléchargé de fichiers.
+                </p>
+                <div style="text-align: center; padding: 1rem;">
+                    <a href="{{ url_for('main.upload_file') }}" class="btn btn-primary">
+                        <i class="fas fa-upload"></i> Uploader un fichier
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

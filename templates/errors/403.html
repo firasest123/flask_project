@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}403 - Accès refusé{% endblock %}
+
+{% block content %}
+<div class="card text-center" style="padding: 4rem;">
+    <i class="fas fa-ban" style="font-size: 6rem; color: #e74c3c;"></i>
+    <h1 style="font-size: 4rem; color: #2c3e50; margin-top: 2rem;">403</h1>
+    <h2>Accès refusé</h2>
+    <p style="color: #666; font-size: 1.2rem; margin: 2rem 0;">
+        Vous n'avez pas les permissions nécessaires pour accéder à cette page.
+    </p>
+    <div>
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">
+            <i class="fas fa-home"></i> Retour à l'accueil
+        </a>
+    </div>
+</div>
+{% endblock %}

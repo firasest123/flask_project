@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil - Application Flask{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1>Bienvenue sur l'Application Flask</h1>
+    </div>
+    
+    <div style="text-align: center; padding: 2rem;">
+        <h2 style="color: #4a90e2; margin-bottom: 1rem;">
+            <i class="fas fa-rocket"></i> ProjetFlask
+        </h2>
+        
+        <p style="font-size: 1.2rem; color: #666; max-width: 800px; margin: 0 auto 2rem;">
+            Application web complète intégrant toutes les fonctionnalités avancées du Framework Flask
+        </p>
+        
+        <div class="stats-grid" style="margin-top: 3rem;">
+            <div class="stat-card">
+                <i class="fas fa-check-circle" style="font-size: 3rem; color: #50c878;"></i>
+                <h3 style="margin-top: 1rem;">API REST</h3>
+                <p>Endpoints complets pour CRUD</p>
+            </div>
+            
+            <div class="stat-card">
+                <i class="fas fa-lock" style="font-size: 3rem; color: #4a90e2;"></i>
+                <h3 style="margin-top: 1rem;">Sécurité</h3>
+                <p>HTTPS, CSRF, Sessions sécurisées</p>
+            </div>
+            
+            <div class="stat-card">
+                <i class="fas fa-users" style="font-size: 3rem; color: #f39c12;"></i>
+                <h3 style="margin-top: 1rem;">Authentification</h3>
+                <p>Flask-Login avec gestion des rôles</p>
+            </div>
+            
+            <div class="stat-card">
+                <i class="fas fa-upload" style="font-size: 3rem; color: #e74c3c;"></i>
+                <h3 style="margin-top: 1rem;">Upload</h3>
+                <p>Gestion complète des fichiers</p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 3rem;">
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 2rem;">
+                    <i class="fas fa-chart-line"></i> Accéder au Dashboard
+                </a>
+            {% else %}
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 2rem; margin-right: 1rem;">
+                    <i class="fas fa-user-plus"></i> S'inscrire
+                </a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-secondary" style="font-size: 1.2rem; padding: 1rem 2rem;">
+                    <i class="fas fa-sign-in-alt"></i> Se connecter
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Fonctionnalités -->
+<div class="row" style="margin-top: 2rem;">
+    <div class="col-4">
+        <div class="card">
+            <h3><i class="fas fa-database"></i> Base de données</h3>
+            <p>SQLAlchemy avec modèles relationnels complets incluant Users, Products, Uploads et ActivityLogs.</p>
+        </div>
+    </div>
+    
+    <div class="col-4">
+        <div class="card">
+            <h3><i class="fas fa-code"></i> Templates Jinja2</h3>
+            <p>Rendu dynamique avec héritage de templates, filtres personnalisés et macros réutilisables.</p>
+        </div>
+    </div>
+    
+    <div class="col-4">
+        <div class="card">
+            <h3><i class="fas fa-shield-alt"></i> Sécurité HTTP</h3>
+            <p>Flask-Talisman pour HTTPS, protection CSRF, headers de sécurité et sessions sécurisées.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-4">
+        <div class="card">
+            <h3><i class="fas fa-user-lock"></i> Gestion des rôles</h3>
+            <p>Système de rôles (Admin, User) avec décorateurs personnalisés pour contrôle d'accès.</p>
+        </div>
+    </div>
+    
+    <div class="col-4">
+        <div class="card">
+            <h3><i class="fas fa-tools"></i> Flask-Admin</h3>
+            <p>Interface d'administration complète pour gérer toutes les entités de la base de données.</p>
+        </div>
+    </div>
+    
+    <div class="col-4">
+        <div class="card">
+            <h3><i class="fas fa-chart-pie"></i> Dashboard</h3>
+            <p>Tableau de bord ergonomique avec statistiques en temps réel et visualisations.</p>
+        </div>
+    </div>
+</div>
+
+<!-- API Documentation -->
+<div class="card" style="margin-top: 2rem;">
+    <div class="card-header">
+        <h2><i class="fas fa-book"></i> Documentation API REST</h2>
+    </div>
+    
+    <div style="padding: 1rem;">
+        <h3>Endpoints disponibles :</h3>
+        <ul style="line-height: 2; margin-left: 2rem;">
+            <li><code>GET /api/products</code> - Liste tous les produits</li>
+            <li><code>GET /api/products/&lt;id&gt;</code> - Récupère un produit</li>
+            <li><code>POST /api/products</code> - Crée un produit (authentification requise)</li>
+            <li><code>PUT /api/products/&lt;id&gt;</code> - Met à jour un produit</li>
+            <li><code>DELETE /api/products/&lt;id&gt;</code> - Supprime un produit</li>
+            <li><code>GET /api/users</code> - Liste des utilisateurs (admin)</li>
+            <li><code>GET /api/uploads</code> - Fichiers uploadés</li>
+            <li><code>GET /api/stats/dashboard</code> - Statistiques du dashboard</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

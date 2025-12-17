@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Modifier' if product else 'Créer' }} un produit{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                <h2>
+                    <i class="fas fa-{{ 'edit' if product else 'plus' }}"></i>
+                    {{ 'Modifier' if product else 'Créer' }} un produit
+                </h2>
+            </div>
+            
+            <form method="POST" action="{{ url_for('main.edit_product', product_id=product.id) if product else url_for('main.create_product') }}">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    <label for="name">Nom du produit *</label>
+                    {{ form.name(class="form-control", placeholder="Ex: Ordinateur portable") }}
+                    {% if form.name.errors %}
+                        <div style="color: #e74c3c; margin-top: 0.5rem;">
+                            {% for error in form.name.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    {{ form.description(class="form-control", rows="4", placeholder="Décrivez le produit...") }}
+                    {% if form.description.errors %}
+                        <div style="color: #e74c3c; margin-top: 0.5rem;">
+                            {% for error in form.description.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="price">Prix (€) *</label>
+                            {{ form.price(class="form-control", placeholder="0.00", type="number", step="0.01") }}
+                            {% if form.price.errors %}
+                                <div style="color: #e74c3c; margin-top: 0.5rem;">
+                                    {% for error in form.price.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="stock">Stock</label>
+                            {{ form.stock(class="form-control", placeholder="0", type="number") }}
+                            {% if form.stock.errors %}
+                                <div style="color: #e74c3c; margin-top: 0.5rem;">
+                                    {% for error in form.stock.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Catégorie</label>
+                    {{ form.category(class="form-control", placeholder="Ex: Électronique") }}
+                    {% if form.category.errors %}
+                        <div style="color: #e74c3c; margin-top: 0.5rem;">
+                            {% for error in form.category.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="image_url">URL de l'image</label>
+                    {{ form.image_url(class="form-control", placeholder="https://example.com/image.jpg") }}
+                    {% if form.image_url.errors %}
+                        <div style="color: #e74c3c; margin-top: 0.5rem;">
+                            {% for error in form.image_url.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-success" style="flex: 1;">
+                        <i class="fas fa-save"></i> {{ 'Mettre à jour' if product else 'Créer' }}
+                    </button>
+                    <a href="{{ url_for('main.products') }}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-3"></div>
+</div>
+{% endblock %}

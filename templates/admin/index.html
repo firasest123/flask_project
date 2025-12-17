@@ -1,0 +1,67 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<div style="padding: 2rem;">
+    <h1 style="color: #4a90e2; margin-bottom: 2rem;">
+        <i class="fa fa-dashboard"></i> Tableau de bord administrateur
+    </h1>
+    
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card text-center" style="padding: 1.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <i class="fa fa-users" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <h2 style="margin: 0; font-size: 2.5rem;">{{ stats.total_users }}</h2>
+                <p style="margin-top: 0.5rem;">Utilisateurs</p>
+                <small>{{ stats.active_users }} actifs / {{ stats.inactive_users }} inactifs</small>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card text-center" style="padding: 1.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                <i class="fa fa-box" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <h2 style="margin: 0; font-size: 2.5rem;">{{ stats.total_products }}</h2>
+                <p style="margin-top: 0.5rem;">Produits</p>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card text-center" style="padding: 1.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                <i class="fa fa-file" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <h2 style="margin: 0; font-size: 2.5rem;">{{ stats.total_uploads }}</h2>
+                <p style="margin-top: 0.5rem;">Fichiers uploadés</p>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card text-center" style="padding: 1.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white;">
+                <i class="fa fa-shield" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                <h2 style="margin: 0; font-size: 2.5rem;">{{ stats.total_roles }}</h2>
+                <p style="margin-top: 0.5rem;">Rôles</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row" style="margin-top: 2rem;">
+        <div class="col-md-12">
+            <div class="card" style="padding: 1.5rem;">
+                <h3><i class="fa fa-info-circle"></i> Bienvenue dans l'interface d'administration</h3>
+                <p>Utilisez le menu de gauche pour gérer les différentes entités de l'application.</p>
+                
+                <h4 style="margin-top: 2rem;"><i class="fa fa-tasks"></i> Fonctionnalités disponibles :</h4>
+                <ul style="line-height: 2;">
+                    <li><strong>Utilisateurs :</strong> Gérer les comptes, activer/désactiver, assigner des rôles</li>
+                    <li><strong>Produits :</strong> CRUD complet sur les produits</li>
+                    <li><strong>Fichiers :</strong> Voir et gérer tous les fichiers uploadés</li>
+                    <li><strong>Rôles :</strong> Créer et modifier les rôles de l'application</li>
+                    <li><strong>Logs d'activité :</strong> Surveiller toutes les actions des utilisateurs</li>
+                </ul>
+                
+                <div style="margin-top: 2rem; padding: 1rem; background: #fff3cd; border-left: 4px solid #ffc107;">
+                    <strong><i class="fa fa-exclamation-triangle"></i> Note de sécurité :</strong>
+                    <p>Cette interface est protégée et accessible uniquement aux administrateurs. Toutes les actions sont enregistrées dans les logs.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Upload de fichiers{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2><i class="fas fa-upload"></i> Télécharger des fichiers</h2>
+    </div>
+    
+    <form method="POST" action="{{ url_for('main.upload_file') }}" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        
+        <div class="upload-zone" onclick="document.getElementById('file').click()">
+            <i class="fas fa-cloud-upload-alt" style="font-size: 4rem; color: #4a90e2;"></i>
+            <p style="margin-top: 1rem; font-size: 1.2rem;">
+                Cliquez pour sélectionner un fichier ou glissez-déposez ici
+            </p>
+            <p style="color: #666;">
+                Formats acceptés: PDF, TXT, Images (PNG, JPG, JPEG, GIF), Documents (DOC, DOCX)
+            </p>
+            <p style="color: #666;">Taille maximale: 16 MB</p>
+        </div>
+        
+        {{ form.file(style="display: none;", id="file") }}
+        
+        {% if form.file.errors %}
+            <div style="color: #e74c3c; margin-top: 1rem; text-align: center;">
+                {% for error in form.file.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <div style="text-align: center; margin-top: 2rem;">
+            <button type="submit" class="btn btn-success" style="padding: 1rem 3rem;">
+                <i class="fas fa-upload"></i> Télécharger le fichier
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Liste des fichiers uploadés -->
+<div class="card">
+    <div class="card-header">
+        <h3><i class="fas fa-file"></i> Mes fichiers</h3>
+    </div>
+    
+    {% if uploads %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nom du fichier</th>
+                    <th>Type</th>
+                    <th>Taille</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for upload in uploads %}
+                <tr>
+                    <td>
+                        <i class="fas fa-file"></i>
+                        {{ upload.original_filename }}
+                    </td>
+                    <td>
+                        <span style="background: #e3f2fd; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.875rem;">
+                            {{ upload.mime_type or 'Inconnu' }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if upload.file_size %}
+                            {% if upload.file_size < 1024 %}
+                                {{ upload.file_size }} B
+                            {% elif upload.file_size < 1048576 %}
+                                {{ "%.2f"|format(upload.file_size / 1024) }} KB
+                            {% else %}
+                                {{ "%.2f"|format(upload.file_size / 1048576) }} MB
+                            {% endif %}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ upload.uploaded_at.strftime('%d/%m/%Y %H:%M') if upload.uploaded_at else '-' }}</td>
+                    <td>
+                        <a href="{{ url_for('main.download_file', file_id=upload.id) }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-download"></i> Télécharger
+                        </a>
+                        <form method="POST" action="{{ url_for('main.delete_file', file_id=upload.id) }}" style="display: inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirmDelete('Supprimer ce fichier ?')">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="text-align: center; padding: 2rem; color: #666;">
+            <i class="fas fa-inbox" style="font-size: 3rem; display: block; margin-bottom: 1rem;"></i>
+            Aucun fichier uploadé pour le moment
+        </p>
+    {% endif %}
+</div>
+{% endblock %}

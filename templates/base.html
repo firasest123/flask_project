@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Application Flask{% endblock %}</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="{{ url_for('main.index') }}" class="navbar-brand">
+                <i class="fas fa-flask"></i> Flask App
+            </a>
+            
+            <ul class="navbar-nav">
+                <li><a href="{{ url_for('main.index') }}"><i class="fas fa-home"></i> Accueil</a></li>
+                
+                {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('main.products') }}"><i class="fas fa-box"></i> Produits</a></li>
+                    <li><a href="{{ url_for('main.upload_file') }}"><i class="fas fa-upload"></i> Upload</a></li>
+                    <li><a href="{{ url_for('main.dashboard') }}"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                    
+                    
+                    
+                    <li><a href="{{ url_for('auth.profile') }}"><i class="fas fa-user"></i> {{ current_user.username }}</a></li>
+                    <li><a href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('auth.login') }}"><i class="fas fa-sign-in-alt"></i> Connexion</a></li>
+                    <li><a href="{{ url_for('auth.register') }}"><i class="fas fa-user-plus"></i> Inscription</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Messages Flash -->
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    <!-- Contenu principal -->
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Application Flask - Projet Mini-Examen</p>
+            <p>Développé avec Flask, SQLAlchemy, Flask-Login, Flask-Admin</p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
