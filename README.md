@@ -293,17 +293,4 @@ $env:FLASK_ENV="production"
 ✅ **Flask-Admin** : Interface d'administration fonctionnelle
 ✅ **Dashboard ergonomique** : Statistiques et graphiques en temps réel
 
-## 📞 Support
 
-Pour toute question ou problème :
-1. Vérifiez que toutes les dépendances sont installées
-2. Vérifiez que la base de données est initialisée
-3. Consultez les logs dans le terminal
-
-## 📄 Licence
-
-Projet éducatif - Mini-examen Flask 2025
-
----
-
-**Développé avec ❤️ pour le cours Flask**
